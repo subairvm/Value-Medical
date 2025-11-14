@@ -1,0 +1,5 @@
+{
+  "name": "Copy of VitalTrack - Health Monitoring Dashboard",
+  "description": "A comprehensive health tracking application to monitor key vitals like blood sugar, cholesterol, HBA1c, Creatinine, and PSA. Features daily reports, data visualization with charts, and printable health summaries for easy sharing with healthcare professionals.",
+  "requestFramePermissions": []
+}
