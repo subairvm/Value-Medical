@@ -2,14 +2,16 @@ import React from 'react';
 import { HealthRecord } from '../types';
 import { METRIC_CONFIG, METRIC_KEYS, getValueColorClass } from '../constants';
 import { TrashIcon } from './icons/MetricIcons';
+import Spinner from './Spinner';
 
 interface HistoryTableProps {
   records: HealthRecord[];
   deleteRecord: (id: string) => void;
   isPrintView?: boolean;
+  loading: boolean;
 }
 
-const HistoryTable: React.FC<HistoryTableProps> = ({ records, deleteRecord, isPrintView = false }) => {
+const HistoryTable: React.FC<HistoryTableProps> = ({ records, deleteRecord, isPrintView = false, loading }) => {
   const handlePrint = () => {
     window.print();
   };
@@ -27,52 +29,56 @@ const HistoryTable: React.FC<HistoryTableProps> = ({ records, deleteRecord, isPr
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-slate-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider sticky left-0 bg-slate-50 z-10">Date</th>
-              {METRIC_KEYS.map(key => (
-                <th key={key} scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  {METRIC_CONFIG[key].name}
-                </th>
-              ))}
-               {!isPrintView && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Delete</span></th>}
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-slate-200">
-            {records.map(record => (
-              <tr key={record.id} className="hover:bg-slate-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 sticky left-0 bg-white hover:bg-slate-50 z-10">
-                  {new Date(record.date).toLocaleDateString('en-GB')}
-                </td>
-                {METRIC_KEYS.map(key => {
-                    const value = record[key];
-                    const colorClass = getValueColorClass(key, value);
-                    return (
-                        <td key={key} className="px-6 py-4 whitespace-nowrap text-sm">
-                            {value !== undefined ? (
-                                <span className={`font-semibold ${colorClass}`}>{value}</span>
-                            ) : (
-                                <span className="text-slate-400">N/A</span>
-                            )}
-                        </td>
-                    )
-                })}
-                {!isPrintView && (
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onClick={() => deleteRecord(record.id)} className="text-red-500 hover:text-red-700 transition-colors">
-                            <TrashIcon className="w-5 h-5"/>
-                        </button>
+        {loading ? <Spinner /> : (
+          <>
+            <table className="min-w-full divide-y divide-slate-200">
+              <thead className="bg-slate-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider sticky left-0 bg-slate-50 z-10">Date</th>
+                  {METRIC_KEYS.map(key => (
+                    <th key={key} scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      {METRIC_CONFIG[key].name}
+                    </th>
+                  ))}
+                  {!isPrintView && <th scope="col" className="relative px-6 py-3"><span className="sr-only">Delete</span></th>}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-slate-200">
+                {records.map(record => (
+                  <tr key={record.id} className="hover:bg-slate-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 sticky left-0 bg-white hover:bg-slate-50 z-10">
+                      {new Date(record.date).toLocaleDateString('en-GB')}
                     </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {records.length === 0 && (
-            <div className="text-center py-10 text-slate-500">
-                <p>No records found. Add a new record to get started.</p>
-            </div>
+                    {METRIC_KEYS.map(key => {
+                        const value = record[key];
+                        const colorClass = getValueColorClass(key, value);
+                        return (
+                            <td key={key} className="px-6 py-4 whitespace-nowrap text-sm">
+                                {value !== undefined ? (
+                                    <span className={`font-semibold ${colorClass}`}>{value}</span>
+                                ) : (
+                                    <span className="text-slate-400">N/A</span>
+                                )}
+                            </td>
+                        )
+                    })}
+                    {!isPrintView && (
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onClick={() => deleteRecord(record.id)} className="text-red-500 hover:text-red-700 transition-colors">
+                                <TrashIcon className="w-5 h-5"/>
+                            </button>
+                        </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {records.length === 0 && (
+                <div className="text-center py-10 text-slate-500">
+                    <p>No records found. Add a new record to get started.</p>
+                </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -1,7 +1,16 @@
-
 import React from 'react';
+import { auth } from '../firebase';
+import { User } from 'firebase/auth';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+    user: User | null;
+}
+
+const Header: React.FC<HeaderProps> = ({ user }) => {
+  const handleSignOut = () => {
+    auth.signOut();
+  };
+
   return (
     <header className="bg-white shadow-sm no-print">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,6 +34,19 @@ const Header: React.FC = () => {
               Vital<span className="text-teal-500">Track</span>
             </h1>
           </div>
+          {user && (
+            <div className="flex items-center space-x-4">
+                <span className="text-sm text-slate-600 hidden sm:block">
+                    Welcome, {user.displayName || user.email}
+                </span>
+                <button
+                    onClick={handleSignOut}
+                    className="px-3 py-1.5 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors"
+                >
+                    Sign Out
+                </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

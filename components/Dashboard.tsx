@@ -2,9 +2,11 @@ import React from 'react';
 import { HealthRecord, HealthMetric } from '../types';
 import { METRIC_CONFIG, METRIC_KEYS, getValueColorClass } from '../constants';
 import ChartCard from './ChartCard';
+import Spinner from './Spinner';
 
 interface DashboardProps {
   records: HealthRecord[];
+  loading: boolean;
 }
 
 const StatCard: React.FC<{ metric: HealthMetric; value?: number }> = ({ metric, value }) => {
@@ -32,7 +34,15 @@ const StatCard: React.FC<{ metric: HealthMetric; value?: number }> = ({ metric, 
     );
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ records }) => {
+const Dashboard: React.FC<DashboardProps> = ({ records, loading }) => {
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-6 min-h-[300px] flex items-center justify-center">
+          <Spinner />
+      </div>
+    );
+  }
+
   const latestRecord = records.length > 0 ? records[0] : null;
 
   return (
